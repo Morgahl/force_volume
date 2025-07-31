@@ -1,40 +1,11 @@
-package main
+package mic
 
 import (
-	"flag"
 	"log"
-	"time"
 
 	"github.com/go-ole/go-ole"
 	"github.com/moutend/go-wca/pkg/wca"
 )
-
-var (
-	targetVolume float64
-	interval     time.Duration
-)
-
-func init() {
-	flag.Float64Var(&targetVolume, "volume", 95.0, "Target microphone volume level (0.00-100.00)")
-	flag.DurationVar(&interval, "interval", 3*time.Second, "Interval to check and enforce volume")
-	flag.Parse()
-}
-
-func main() {
-	log.Println("Starting microphone volume enforcer")
-	mc, err := NewMicController(float32(targetVolume))
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer mc.Close()
-
-	for {
-		if err := mc.EnforceVolume(); err != nil {
-			log.Println("Failed to enforce volume:", err)
-		}
-		time.Sleep(interval)
-	}
-}
 
 type MicController struct {
 	targetVolume float32
@@ -91,6 +62,10 @@ func NewMicController(targetVolume float32) (*MicController, error) {
 		device:       device,
 		enum:         enum,
 	}, nil
+}
+
+func (m *MicController) SetTargetVolume(v float32) {
+	m.targetVolume = v
 }
 
 func (m *MicController) EnforceVolume() error {

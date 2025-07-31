@@ -9,9 +9,12 @@ trying to adjust it out from under me.
 
 ```sh
 # Force the volume to 95% every 3 seconds
-go run main.go
+go run ./cmd/main.go
 
 # Force the volume to 50% every 5 seconds
-go run main.go --volume 50 --interval 5s
+go run ./cmd/main.go --volume 50 --interval 5s
+
+# Run optional HTTP server to control the volume
+go run ./cmd/main.go --http 127.0.0.1:8080
 ```
 
